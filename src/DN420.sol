@@ -119,25 +119,6 @@ abstract contract DN420 is ERC20, ERC1155 {
         _afterSigleTransfer(from, address(0), id, amount);
     }
 
-    /// @notice Mints a new NFT from a blank token
-    /// @param to The recipient address
-    /// @param id The token ID to mint
-    /// @param amount The amount of tokens to mint
-    /// @param data Additional data for the minting process
-    function mintFromBlank(
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public virtual {
-        maxTokenId = id > maxTokenId ? id : maxTokenId;
-        
-        nftBalanceOf[msg.sender][0] -= amount;
-        _ownedBalanceOf[to] += amount;
-        _owned[to].set(id);
-        ERC1155._mint(to, id, amount, data);
-    }
-
     /// @notice Mints NFTs from the blank token (0) to a specified address
     /// @param from The address to mint from (should be the blank token)
     /// @param to The address to receive the minted NFTs
@@ -150,7 +131,7 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256 id,
         uint256 amount,
         bytes memory data
-    ) internal {
+    ) internal virtual {
         maxTokenId = id > maxTokenId ? id : maxTokenId;
         
         nftBalanceOf[from][0] -= amount;
