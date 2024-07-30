@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-
-import {LibBitmap} from  "@vectorized/solady/utils/LibBitmap.sol";
-
 import {ERC20} from "./ERC20.sol";
 import {ERC1155} from "./ERC1155.sol";
+
+import {LibBitmap} from  "./lib/LibBitmap.sol";
 
 abstract contract DN420 is ERC20, ERC1155 {
     using LibBitmap for LibBitmap.Bitmap;
