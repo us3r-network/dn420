@@ -219,7 +219,7 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256 amount,
         bytes calldata data
     ) public virtual {
-        _safeTransferFrom(from, to, id, amount, data);
+        ERC1155._safeTransferFrom(from, to, id, amount, data);
         _ownedBalanceOf[from] -= amount;
         _ownedBalanceOf[to] += amount;
         _owned[to].set(id);
@@ -242,7 +242,7 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256[] calldata amounts,
         bytes calldata data
     ) public virtual {
-        _safeBatchTransferFrom(from, to, ids, amounts, data);
+        ERC1155._safeBatchTransferFrom(from, to, ids, amounts, data);
         uint256 idsLength = ids.length;
         for (uint256 i = 0; i < idsLength; i++) {
             _ownedBalanceOf[from] -= amounts[i];
