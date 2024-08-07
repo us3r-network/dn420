@@ -151,28 +151,6 @@ abstract contract DN420 is ERC20, ERC1155 {
         nftBalanceOf[msg.sender][0] += amount;
     }
 
-    /// @notice Batch mints new NFTs from blank tokens
-    /// @param to The recipient address
-    /// @param ids An array of token IDs to mint
-    /// @param amounts An array of amounts for each token ID
-    /// @param data Additional data for the minting process
-    function batchMintFromBlank(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) public virtual {
-        uint256 idsLength = ids.length;
-        for (uint256 i = 0; i < idsLength; i++) {
-            maxTokenId = ids[i] > maxTokenId ? ids[i] : maxTokenId;
-
-            nftBalanceOf[msg.sender][0] -= amounts[i];
-            _ownedBalanceOf[to] += amounts[i];
-            _owned[to].set(ids[i]);
-            ERC1155._mint(to, ids[i], amounts[i], data);
-        }
-    }
-
     function _batchMint(
         address to,
         uint256[] memory ids,
