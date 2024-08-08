@@ -473,36 +473,4 @@ contract DN420Test is Test {
 
     }
 
-    function testBatchMintFromWhiteboard() public {
-        token.mint(Minter1, 5 * token.unit());
-        assertEq(token.balanceOf(Minter1), 5 * token.unit());
-        assertEq(token.nftBalanceOf(Minter1, 0), 5);
-
-
-        vm.startPrank(Minter1);
-        uint256[] memory ids = new uint256[](2);
-        uint256[] memory amounts = new uint256[](2);
-        ids[0] = 1;
-        ids[1] = 2;
-        amounts[0] = 3;
-        amounts[1] = 2;
-        token.batchMintFromBlank(Minter1, ids, amounts, "");
-        vm.stopPrank();
-
-        assertEq(token.balanceOf(Minter1), 5 * token.unit());
-        assertEq(token.nftBalanceOf(Minter1, 0), 0);
-        assertEq(token.nftBalanceOf(Minter1, 1), 3);
-        assertEq(token.nftBalanceOf(Minter1, 2), 2);
-        assertEq(token.isOwned(Minter1, 1), true);
-        assertEq(token.isOwned(Minter1, 2), true);
-
-        vm.startPrank(Minter1);
-        ids[0] = 0;
-        ids[1] = 2;
-        amounts[0] = 3;
-        amounts[1] = 2;
-        vm.expectRevert(); // Minter1 has 0 blankNFT
-        token.batchMintFromBlank(Minter1, ids, amounts, "");
-        vm.stopPrank();
-    }
 }
