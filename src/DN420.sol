@@ -110,11 +110,11 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256 id,
         uint256 amount
     ) internal override(ERC1155) virtual {
-        ERC1155._burn(from, id, amount);
         _ownedBalanceOf[from] -= amount;
         if (nftBalanceOf[from][id] == 0) {
             _owned[from].unset(id);
         }
+        ERC1155._burn(from, id, amount);
         _afterSigleTransfer(from, address(0), id, amount);
     }
 
@@ -197,13 +197,13 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256 amount,
         bytes calldata data
     ) public virtual {
-        ERC1155._safeTransferFrom(from, to, id, amount, data);
         _ownedBalanceOf[from] -= amount;
         _ownedBalanceOf[to] += amount;
         _owned[to].set(id);
         if (nftBalanceOf[from][id] == 0) {
             _owned[from].unset(id);
         }
+        ERC1155._safeTransferFrom(from, to, id, amount, data);
         _afterSigleTransfer(from, to, id, amount);
     }
 
