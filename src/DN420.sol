@@ -95,9 +95,9 @@ abstract contract DN420 is ERC20, ERC1155 {
         bytes memory data
     ) internal override(ERC1155) virtual {
         maxTokenId = id > maxTokenId ? id : maxTokenId;
-        ERC1155._mint(to, id, amount, data);
         _ownedBalanceOf[to] += amount;
         _owned[to].set(id);
+        ERC1155._mint(to, id, amount, data);
         _afterSigleTransfer(address(0), to, id, amount);
     }
 
