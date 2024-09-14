@@ -473,4 +473,49 @@ contract DN420Test is Test {
 
     }
 
+    function testWhiteMintAndTransfer() public {
+        uint256 tokenId = 0;
+        
+        token.mint(Minter1, tokenId, 3, "");
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 3);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit());
+
+        vm.startPrank(Minter1);
+        token.transfer(Minter2, 10);
+        vm.stopPrank();
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 2);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit() - 10);
+        assertEq(token.nftBalanceOf(Minter2, 0), 0);
+        assertEq(token.balanceOf(Minter2), 10);
+
+        vm.startPrank(Minter1);
+        token.transfer(Minter2, token.unit());
+        vm.stopPrank();
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 1);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit() - 10 - token.unit());
+        assertEq(token.nftBalanceOf(Minter2, 0), 1);
+        assertEq(token.balanceOf(Minter2), 10 + token.unit());
+
+        vm.startPrank(Minter1);
+        token.transfer(Minter2, token.unit() - 10);
+        vm.stopPrank();
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 1);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit() - 2 * token.unit());
+        assertEq(token.nftBalanceOf(Minter2, tokenId), 2);
+        assertEq(token.balanceOf(Minter2), 2 * token.unit());
+
+        token.mint(Minter2, 1, 3, "");
+        assertEq(token.nftBalanceOf(Minter2, 1), 3);
+        assertEq(token.balanceOf(Minter2), 3 * token.unit() + 2 * token.unit());
+
+
+        token.mint(Minter2, 2000);
+        assertEq(token.balanceOf(Minter2), 3 * token.unit() + 2 * token.unit() + 2000);
+        assertEq(token.nftBalanceOf(Minter2, 1), 3);
+        assertEq(token.nftBalanceOf(Minter2, 0), 2);
+    }
 }
