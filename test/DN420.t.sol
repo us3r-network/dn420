@@ -380,10 +380,10 @@ contract DN420Test is Test {
         assertEq(token.nftBalanceOf(Minter1, 1), 1);
         assertEq(token.nftBalanceOf(Minter1, 2), 2);
         assertEq(token.nftBalanceOf(Minter1, 3), 2);
-        assertEq(token.isOwned(Minter1, 1), true);
-        assertEq(token.isOwned(Minter1, 2), true);
-        assertEq(token.isOwned(Minter1, 3), true);
-        assertEq(token.isOwned(Minter1, 4), false);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 1), true);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 2), true);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 3), true);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 4), false);
 
         assertEq(token.balanceOf(Minter2), 5 * token.unit() / 10 + 5 * token.unit() / 10);
         assertEq(token.nftBalanceOf(Minter2, 0), 1);
@@ -404,22 +404,22 @@ contract DN420Test is Test {
         assertEq(token.nftBalanceOf(Minter1, 1), 1);
         assertEq(token.nftBalanceOf(Minter1, 2), 1);
         assertEq(token.nftBalanceOf(Minter1, 3), 1);
-        assertEq(token.ownedBalanceOf(Minter1), 3);
-        assertEq(token.isOwned(Minter1, 1), true);
-        assertEq(token.isOwned(Minter1, 2), true);
-        assertEq(token.isOwned(Minter1, 3), true);
-        assertEq(token.isOwned(Minter1, 4), false);
+        assertEq(token.ownedNonBlankBalanceOf(Minter1), 3);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 1), true);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 2), true);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 3), true);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 4), false);
 
         assertEq(token.balanceOf(Minter2),  token.unit() + 2 * token.unit());
         assertEq(token.nftBalanceOf(Minter2, 0), 1);
         assertEq(token.nftBalanceOf(Minter2, 1), 0);
         assertEq(token.nftBalanceOf(Minter2, 2), 1);
         assertEq(token.nftBalanceOf(Minter2, 3), 1);
-        assertEq(token.ownedBalanceOf(Minter2), 2);
-        assertEq(token.isOwned(Minter2, 1), false);
-        assertEq(token.isOwned(Minter2, 2), true);
-        assertEq(token.isOwned(Minter2, 3), true);
-        assertEq(token.isOwned(Minter2, 4), false);
+        assertEq(token.ownedNonBlankBalanceOf(Minter2), 2);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 1), false);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 2), true);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 3), true);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 4), false);
 
         // batchBurn
         uint256[] memory tokenIds3 = new uint256[](2);
@@ -437,11 +437,11 @@ contract DN420Test is Test {
         assertEq(token.nftBalanceOf(Minter2, 1), 0);
         assertEq(token.nftBalanceOf(Minter2, 2), 0);
         assertEq(token.nftBalanceOf(Minter2, 3), 0);
-        assertEq(token.ownedBalanceOf(Minter2), 0);
-        assertEq(token.isOwned(Minter2, 1), false);
-        assertEq(token.isOwned(Minter2, 2), false);
-        assertEq(token.isOwned(Minter2, 3), false);
-        assertEq(token.isOwned(Minter2, 4), false);
+        assertEq(token.ownedNonBlankBalanceOf(Minter2), 0);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 1), false);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 2), false);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 3), false);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 4), false);
 
         // safeTransferFrom
         vm.startPrank(Minter1);
@@ -454,23 +454,115 @@ contract DN420Test is Test {
         assertEq(token.nftBalanceOf(Minter1, 1), 1);
         assertEq(token.nftBalanceOf(Minter1, 2), 0);
         assertEq(token.nftBalanceOf(Minter1, 3), 1);
-        assertEq(token.ownedBalanceOf(Minter1), 2);
-        assertEq(token.isOwned(Minter1, 1), true);
-        assertEq(token.isOwned(Minter1, 2), false);
-        assertEq(token.isOwned(Minter1, 3), true);
-        assertEq(token.isOwned(Minter1, 4), false);
+        assertEq(token.ownedNonBlankBalanceOf(Minter1), 2);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 1), true);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 2), false);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 3), true);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 4), false);
 
         assertEq(token.balanceOf(Minter2),  token.unit() + token.unit());
         assertEq(token.nftBalanceOf(Minter2, 0), 1);
         assertEq(token.nftBalanceOf(Minter2, 1), 0);
         assertEq(token.nftBalanceOf(Minter2, 2), 1);
         assertEq(token.nftBalanceOf(Minter2, 3), 0);
-        assertEq(token.ownedBalanceOf(Minter2), 1);
-        assertEq(token.isOwned(Minter2, 1), false);
-        assertEq(token.isOwned(Minter2, 2), true);
-        assertEq(token.isOwned(Minter2, 3), false);
-        assertEq(token.isOwned(Minter2, 4), false);
+        assertEq(token.ownedNonBlankBalanceOf(Minter2), 1);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 1), false);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 2), true);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 3), false);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 4), false);
 
     }
 
+    function testWhiteMintAndTransfer() public {
+        uint256 tokenId = 0;
+        
+        token.mint(Minter1, tokenId, 3, "");
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 3);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit());
+
+        vm.startPrank(Minter1);
+        token.transfer(Minter2, 10);
+        vm.stopPrank();
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 2);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit() - 10);
+        assertEq(token.nftBalanceOf(Minter2, 0), 0);
+        assertEq(token.balanceOf(Minter2), 10);
+
+        vm.startPrank(Minter1);
+        token.transfer(Minter2, token.unit());
+        vm.stopPrank();
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 1);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit() - 10 - token.unit());
+        assertEq(token.nftBalanceOf(Minter2, 0), 1);
+        assertEq(token.balanceOf(Minter2), 10 + token.unit());
+
+        vm.startPrank(Minter1);
+        token.transfer(Minter2, token.unit() - 10);
+        vm.stopPrank();
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 1);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit() - 2 * token.unit());
+        assertEq(token.nftBalanceOf(Minter2, tokenId), 2);
+        assertEq(token.balanceOf(Minter2), 2 * token.unit());
+
+        token.mint(Minter2, 1, 3, "");
+        assertEq(token.nftBalanceOf(Minter2, 1), 3);
+        assertEq(token.balanceOf(Minter2), 3 * token.unit() + 2 * token.unit());
+
+
+        assertEq(token.balanceOf(Minter2), 3 * token.unit() + 2 * token.unit());
+        assertEq(token.nftBalanceOf(Minter2, 1), 3);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 1), true);
+        assertEq(token.nftBalanceOf(Minter2, 0), 2);
+
+        token.mint(Minter2, 2000);
+        assertEq(token.balanceOf(Minter2), 3 * token.unit() + 2 * token.unit() + 2000);
+        assertEq(token.nftBalanceOf(Minter2, 1), 3);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 1), true);
+        assertEq(token.nftBalanceOf(Minter2, 0), 2);
+
+        token.mint(Minter2, token.unit() - 2000);
+        assertEq(token.balanceOf(Minter2), 3 * token.unit() + 2 * token.unit() + token.unit());
+        assertEq(token.nftBalanceOf(Minter2, 1), 3);
+        assertEq(token.isNonBlankNFTOwned(Minter2, 1), true);
+        assertEq(token.nftBalanceOf(Minter2, 0), 3);
+
+        vm.startPrank(Minter2);
+        token.transfer(Minter1, 2000);
+        vm.stopPrank();
+
+        assertEq(token.nftBalanceOf(Minter1, tokenId), 1);
+        assertEq(token.balanceOf(Minter1), 3 * token.unit() - 2 * token.unit() + 2000);
+
+        assertEq(token.balanceOf(Minter2), 3 * token.unit() + 2 * token.unit() + token.unit() - 2000);
+        assertEq(token.nftBalanceOf(Minter2, 1), 3);
+        assertEq(token.nftBalanceOf(Minter2, tokenId), 2);
+
+        token.mint(Minter2, 0, 1, "");
+        assertEq(token.balanceOf(Minter2), 3 * token.unit() + 2 * token.unit() + token.unit() - 2000 + token.unit());
+        assertEq(token.nftBalanceOf(Minter2, 1), 3);
+        assertEq(token.nftBalanceOf(Minter2, 0), 3);
+
+    }
+
+
+    function testMintBurnOwnd() public {
+        token.mint(Minter1, 1, 2, "");
+        assertEq(token.nftBalanceOf(Minter1, 1), 2);
+        assertEq(token.balanceOf(Minter1), 2 * token.unit());
+        assertEq(token.ownedNonBlankBalanceOf(Minter1), 2);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 1), true);
+
+        vm.startPrank(Minter1);
+        token.burn(Minter1, 1, 2);
+        vm.stopPrank();
+
+        assertEq(token.nftBalanceOf(Minter1, 1), 0);
+        assertEq(token.balanceOf(Minter1), 0);
+        assertEq(token.ownedNonBlankBalanceOf(Minter1), 0);
+        assertEq(token.isNonBlankNFTOwned(Minter1, 1), false);
+    }
 }
