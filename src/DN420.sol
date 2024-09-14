@@ -13,7 +13,7 @@ abstract contract DN420 is ERC20, ERC1155 {
     uint256 public tokenUnit;
     string public baseURI;
 
-    mapping(address => LibBitmap.Bitmap) private nonBlankOwned;
+    mapping(address => LibBitmap.Bitmap) private nonBlankNFTOwned;
     // Record the number of non-whiteboard NFTs owned by the user
     mapping(address => uint256) private nonBlankNFTBalance;
 
@@ -73,7 +73,7 @@ abstract contract DN420 is ERC20, ERC1155 {
     /// @param id The token ID to check
     /// @return True if the address owns the token ID, false otherwise
     function isOwned(address owner, uint256 id) public view returns (bool) {
-        return nonBlankOwned[owner].get(id);
+        return nonBlankNFTOwned[owner].get(id);
     }
 
     /// @notice Gets the balance of non-whiteboard NFTs owned by an address
@@ -97,7 +97,7 @@ abstract contract DN420 is ERC20, ERC1155 {
         maxTokenId = id > maxTokenId ? id : maxTokenId;
         if(id != 0) {
             nonBlankNFTBalance[to] += amount;
-            nonBlankOwned[to].set(id);
+            nonBlankNFTOwned[to].set(id);
         }
         ERC1155._mint(to, id, amount, data);
         _afterSigleTransfer(address(0), to, id, amount);
@@ -116,7 +116,7 @@ abstract contract DN420 is ERC20, ERC1155 {
             nonBlankNFTBalance[from] -= amount;
         }
         if (nftBalanceOf[from][id] == 0) {
-            nonBlankOwned[from].unset(id);
+            nonBlankNFTOwned[from].unset(id);
         }
         ERC1155._burn(from, id, amount);
         _afterSigleTransfer(from, address(0), id, amount);
@@ -140,7 +140,7 @@ abstract contract DN420 is ERC20, ERC1155 {
         nftBalanceOf[from][0] -= amount;
         if (id != 0) {
             nonBlankNFTBalance[to] += amount;
-            nonBlankOwned[to].set(id);
+            nonBlankNFTOwned[to].set(id);
         }
         ERC1155._mint(to, id, amount, data);
     }
@@ -154,7 +154,7 @@ abstract contract DN420 is ERC20, ERC1155 {
             nonBlankNFTBalance[msg.sender] -= amount;
         }
         if (nftBalanceOf[msg.sender][id] == 0) {
-            nonBlankOwned[msg.sender].unset(id);
+            nonBlankNFTOwned[msg.sender].unset(id);
         }
         nftBalanceOf[msg.sender][0] += amount;
     }
@@ -171,7 +171,7 @@ abstract contract DN420 is ERC20, ERC1155 {
             maxTokenId = ids[i] > maxTokenId ? ids[i] : maxTokenId;
             if (ids[i] != 0) {
                 nonBlankNFTBalance[to] += amounts[i];
-                nonBlankOwned[to].set(ids[i]);
+                nonBlankNFTOwned[to].set(ids[i]);
             }
         }
         _afterBatchTransfer(address(0), to, ids, amounts);
@@ -191,7 +191,7 @@ abstract contract DN420 is ERC20, ERC1155 {
                     nonBlankNFTBalance[from] -= amounts[i];
                 }
                 if (nftBalanceOf[from][ids[i]] == 0) {
-                    nonBlankOwned[from].unset(ids[i]);
+                    nonBlankNFTOwned[from].unset(ids[i]);
                 }
             }
         }
@@ -214,11 +214,11 @@ abstract contract DN420 is ERC20, ERC1155 {
         if (id != 0) {
             nonBlankNFTBalance[from] -= amount;
             nonBlankNFTBalance[to] += amount;
-            nonBlankOwned[to].set(id);
+            nonBlankNFTOwned[to].set(id);
         }
         ERC1155._safeTransferFrom(from, to, id, amount, data);
         if (nftBalanceOf[from][id] == 0) {
-            nonBlankOwned[from].unset(id);
+            nonBlankNFTOwned[from].unset(id);
         }
         _afterSigleTransfer(from, to, id, amount);
     }
@@ -242,10 +242,10 @@ abstract contract DN420 is ERC20, ERC1155 {
             if (ids[i] != 0) {
                 nonBlankNFTBalance[from] -= amounts[i];
                 nonBlankNFTBalance[to] += amounts[i];
-                nonBlankOwned[to].set(ids[i]);
+                nonBlankNFTOwned[to].set(ids[i]);
             }
             if (nftBalanceOf[from][ids[i]] == 0) {
-                nonBlankOwned[from].unset(ids[i]);
+                nonBlankNFTOwned[from].unset(ids[i]);
             }
         }
         _afterBatchTransfer(from, to, ids, amounts);
@@ -274,7 +274,7 @@ abstract contract DN420 is ERC20, ERC1155 {
                 uint256 diff = fromOwnedBalance - fromLeftNftBalance;
                 uint256 lastTokenId = maxTokenId;
                 while (diff > 0 && lastTokenId > 0) {
-                    uint256 lastId = nonBlankOwned[from].findLastSet(lastTokenId);
+                    uint256 lastId = nonBlankNFTOwned[from].findLastSet(lastTokenId);
                     if (lastId == LibBitmap.NOT_FOUND) {
                         break;
                     }
@@ -286,7 +286,7 @@ abstract contract DN420 is ERC20, ERC1155 {
                     } else {
                         diff -= lastIdAmount;
                         nftBalanceOf[from][lastId] = 0;
-                        nonBlankOwned[from].unset(lastId);
+                        nonBlankNFTOwned[from].unset(lastId);
                         nonBlankNFTBalance[from] -= lastIdAmount;
                         lastTokenId = lastId - 1;
                     }
