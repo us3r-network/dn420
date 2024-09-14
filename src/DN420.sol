@@ -72,14 +72,14 @@ abstract contract DN420 is ERC20, ERC1155 {
     /// @param owner The address to check
     /// @param id The token ID to check
     /// @return True if the address owns the token ID, false otherwise
-    function isOwned(address owner, uint256 id) public view returns (bool) {
+    function isNonBlankNFTOwned(address owner, uint256 id) public view returns (bool) {
         return nonBlankNFTOwned[owner].get(id);
     }
 
     /// @notice Gets the balance of non-whiteboard NFTs owned by an address
     /// @param owner The address to check
     /// @return The number of non-whiteboard NFTs owned
-    function ownedBalanceOf(address owner) public view returns (uint256) {
+    function ownedNonBlankBalanceOf(address owner) public view returns (uint256) {
         return nonBlankNFTBalance[owner];
     }
 
@@ -115,10 +115,10 @@ abstract contract DN420 is ERC20, ERC1155 {
         if (id != 0) {
             nonBlankNFTBalance[from] -= amount;
         }
+        ERC1155._burn(from, id, amount);
         if (nftBalanceOf[from][id] == 0) {
             nonBlankNFTOwned[from].unset(id);
         }
-        ERC1155._burn(from, id, amount);
         _afterSigleTransfer(from, address(0), id, amount);
     }
 
