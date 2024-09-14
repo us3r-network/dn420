@@ -95,8 +95,10 @@ abstract contract DN420 is ERC20, ERC1155 {
         bytes memory data
     ) internal override(ERC1155) virtual {
         maxTokenId = id > maxTokenId ? id : maxTokenId;
-        _ownedBalanceOf[to] += amount;
-        _owned[to].set(id);
+        if(id != 0) {
+            _ownedBalanceOf[to] += amount;
+            _owned[to].set(id);
+        }
         ERC1155._mint(to, id, amount, data);
         _afterSigleTransfer(address(0), to, id, amount);
     }
@@ -110,7 +112,9 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256 id,
         uint256 amount
     ) internal override(ERC1155) virtual {
-        _ownedBalanceOf[from] -= amount;
+        if (id != 0) {
+            _ownedBalanceOf[from] -= amount;
+        }
         if (nftBalanceOf[from][id] == 0) {
             _owned[from].unset(id);
         }
@@ -134,8 +138,10 @@ abstract contract DN420 is ERC20, ERC1155 {
         maxTokenId = id > maxTokenId ? id : maxTokenId;
         
         nftBalanceOf[from][0] -= amount;
-        _ownedBalanceOf[to] += amount;
-        _owned[to].set(id);
+        if (id != 0) {
+            _ownedBalanceOf[to] += amount;
+            _owned[to].set(id);
+        }
         ERC1155._mint(to, id, amount, data);
     }
 
@@ -144,7 +150,9 @@ abstract contract DN420 is ERC20, ERC1155 {
     /// @param amount The amount of tokens to burn
     function burnToBlank(uint256 id, uint256 amount) public virtual {
         ERC1155._burn(msg.sender, id, amount);
-        _ownedBalanceOf[msg.sender] -= amount;
+        if (id != 0) {
+            _ownedBalanceOf[msg.sender] -= amount;
+        }
         if (nftBalanceOf[msg.sender][id] == 0) {
             _owned[msg.sender].unset(id);
         }
@@ -161,8 +169,10 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256 idsLength = ids.length;
         for (uint256 i = 0; i < idsLength; i++) {
             maxTokenId = ids[i] > maxTokenId ? ids[i] : maxTokenId;
-            _ownedBalanceOf[to] += amounts[i];
-            _owned[to].set(ids[i]);
+            if (ids[i] != 0) {
+                _ownedBalanceOf[to] += amounts[i];
+                _owned[to].set(ids[i]);
+            }
         }
         _afterBatchTransfer(address(0), to, ids, amounts);
     }
@@ -177,8 +187,12 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256 idsLength = ids.length;
         for (uint256 i = 0; i < idsLength; i++) {
             if (nftBalanceOf[from][ids[i]] == 0) {
-                _ownedBalanceOf[from] -= amounts[i];
-                _owned[from].unset(ids[i]);
+                if (ids[i] != 0) {
+                    _ownedBalanceOf[from] -= amounts[i];
+                }
+                if (nftBalanceOf[from][ids[i]] == 0) {
+                    _owned[from].unset(ids[i]);
+                }
             }
         }
         _afterBatchTransfer(from, address(0), ids, amounts);
@@ -197,13 +211,15 @@ abstract contract DN420 is ERC20, ERC1155 {
         uint256 amount,
         bytes calldata data
     ) public virtual {
-        _ownedBalanceOf[from] -= amount;
-        _ownedBalanceOf[to] += amount;
-        _owned[to].set(id);
+        if (id != 0) {
+            _ownedBalanceOf[from] -= amount;
+            _ownedBalanceOf[to] += amount;
+            _owned[to].set(id);
+        }
+        ERC1155._safeTransferFrom(from, to, id, amount, data);
         if (nftBalanceOf[from][id] == 0) {
             _owned[from].unset(id);
         }
-        ERC1155._safeTransferFrom(from, to, id, amount, data);
         _afterSigleTransfer(from, to, id, amount);
     }
 
@@ -223,9 +239,11 @@ abstract contract DN420 is ERC20, ERC1155 {
         ERC1155._safeBatchTransferFrom(from, to, ids, amounts, data);
         uint256 idsLength = ids.length;
         for (uint256 i = 0; i < idsLength; i++) {
-            _ownedBalanceOf[from] -= amounts[i];
-            _ownedBalanceOf[to] += amounts[i];
-            _owned[to].set(ids[i]);
+            if (ids[i] != 0) {
+                _ownedBalanceOf[from] -= amounts[i];
+                _ownedBalanceOf[to] += amounts[i];
+                _owned[to].set(ids[i]);
+            }
             if (nftBalanceOf[from][ids[i]] == 0) {
                 _owned[from].unset(ids[i]);
             }
